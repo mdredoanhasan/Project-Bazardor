@@ -6,7 +6,7 @@ import { Button } from "@heroui/react";
 const HeaderPage = () => {
   return (
     <div className="border border-b-black/10">
-      <div className="container mx-auto flex justify-between mt-5 mb-5 ">
+      <div className="container mx-auto flex justify-between mt-3 mb-3 ">
         <div className="flex ">
           <Image src={"/Stack.png"} alt="logo" height={40} width={54} />
           <div className="ml-2">
