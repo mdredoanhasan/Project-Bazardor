@@ -32,15 +32,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={<div className="h-10 border-b" />}>
           <Marquee />
         </Suspense>
-        <Suspense
-          fallback={
-            <main className="container mx-auto flex-1 px-4 py-12">
-              লোড হচ্ছে...
-            </main>
-          }
-        >
-          {children}
-        </Suspense>
+        <main className="flex-1 bg-[#f0f5f0]">
+          <Suspense
+            fallback={
+              <div className="container mx-auto px-4 py-12">
+                লোড হচ্ছে...
+              </div>
+            }
+          >
+            {children}
+          </Suspense>
+        </main>
         <Footer/>
       </body>
     </html>

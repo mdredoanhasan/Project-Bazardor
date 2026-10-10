@@ -11,17 +11,42 @@ import {
 } from "@heroui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
+import GoogleAuthButton from "@/app/component/googleAuthButton";
+
+function getSafeCallbackURL(): string {
+  const callbackURL = new URLSearchParams(window.location.search).get(
+    "callbackURL",
+  );
+
+  return callbackURL?.startsWith("/") && !callbackURL.startsWith("//")
+    ? callbackURL
+    : "/";
+}
 
 const SignInPage = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const googleAuthErrorRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.get("authError") === "google") {
+      if (googleAuthErrorRef.current) {
+        googleAuthErrorRef.current.textContent =
+          "Google দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।";
+        googleAuthErrorRef.current.hidden = false;
+      }
+      currentUrl.searchParams.delete("authError");
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`,
+      );
+    }
+
     if (currentUrl.searchParams.get("reason") !== "protected-route") {
       return;
     }
@@ -45,13 +70,7 @@ const SignInPage = () => {
       data[key] = value.toString();
     });
 
-    const callbackURL = new URLSearchParams(window.location.search).get(
-      "callbackURL",
-    );
-    const safeCallbackURL =
-      callbackURL?.startsWith("/") && !callbackURL.startsWith("//")
-        ? callbackURL
-        : "/";
+    const safeCallbackURL = getSafeCallbackURL();
 
     if (!data.email || !data.password) {
       toast.error("ইমেইল ও পাসওয়ার্ড দিন।");
@@ -156,13 +175,17 @@ const SignInPage = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary">
-            <FcGoogle /> Google দিয়ে চালিয়ে যান
-          </Button>
+          <GoogleAuthButton />
           <Button variant="secondary">
             <FaGithub /> GitHub দিয়ে চালিয়ে যান
           </Button>
         </div>
+        <p
+          ref={googleAuthErrorRef}
+          role="alert"
+          hidden
+          className="mt-3 text-sm text-red-600"
+        />
 
         <p className="mt-4 text-center text-sm">
           অ্যাকাউন্ট নেই?{" "}

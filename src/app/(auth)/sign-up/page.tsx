@@ -14,7 +14,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
+import GoogleAuthButton from "@/app/component/googleAuthButton";
 
 const SignUpPage = () => {
   const router = useRouter();
@@ -180,9 +180,7 @@ const SignUpPage = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary">
-            <FcGoogle /> Google দিয়ে চালিয়ে যান
-          </Button>
+          <GoogleAuthButton />
           <Button variant="secondary">
             <FaGithub /> GitHub দিয়ে চালিয়ে যান
           </Button>
