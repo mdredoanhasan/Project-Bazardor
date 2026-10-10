@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient, useSession } from "../lib/auth-client";
+import { GoSignOut } from "react-icons/go";
 
 const HeaderPage = () => {
   const router = useRouter();
@@ -102,7 +103,7 @@ const HeaderPage = () => {
                     textValue="সাইন আউট"
                     onAction={handleSignOut}
                   >
-                    ↩ সাইন আউট
+                    <GoSignOut />সাইন আউট
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown.Popover>

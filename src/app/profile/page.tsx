@@ -4,6 +4,7 @@ import { authClient, useSession } from "@/app/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { GoSignOut } from "react-icons/go";
 
 export default function ProfilePage() {
   const { data: session, isPending } = useSession();
@@ -100,7 +101,7 @@ export default function ProfilePage() {
           type="button"
           className="rounded-lg border border-red-500 px-4 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
         >
-          ↩ সাইন আউট
+         <span className="flex items-center gap-2 "><GoSignOut /> সাইন আউট</span>
         </button>
       </section>
 
