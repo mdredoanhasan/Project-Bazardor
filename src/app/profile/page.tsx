@@ -1,10 +1,50 @@
 "use client";
 
-import { useSession } from "@/app/lib/auth-client";
+import { authClient, useSession } from "@/app/lib/auth-client";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function ProfilePage() {
   const { data: session, isPending } = useSession();
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleUpdateName = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    setMessage(null);
+    setErrorMessage(null);
+
+    const formData = new FormData(event.currentTarget);
+    const updatedName = formData.get("name");
+    if (typeof updatedName !== "string" || !updatedName.trim()) {
+      setErrorMessage("নাম লিখুন।");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { error } = await authClient.updateUser({
+        name: updatedName.trim(),
+      });
+
+      if (error) {
+        setErrorMessage(error.message ?? "নাম আপডেট করা যায়নি।");
+        return;
+      }
+
+      setMessage("নাম আপডেট হয়েছে।");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "নাম আপডেট করা যায়নি।",
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   if (isPending) {
     return (
@@ -39,7 +79,7 @@ export default function ProfilePage() {
       <section className="flex items-center justify-between gap-4 rounded-3xl border bg-white p-5">
         <div className="flex items-center gap-4">
           {image ? (
-            <img
+            <Image
               src={image}
               alt={name}
               className="h-16 w-16 rounded-2xl bg-gray-100 object-cover"
@@ -68,7 +108,7 @@ export default function ProfilePage() {
       <section className="rounded-3xl border bg-white p-5">
         <h2 className="mb-4 font-semibold">তথ্য</h2>
 
-        <form className="space-y-3 px-3 pb-3">
+        <form className="space-y-3 px-3 pb-3" onSubmit={handleUpdateName}>
           <div>
             <label htmlFor="name" className="mb-1 block text-sm">
               নাম
@@ -77,15 +117,28 @@ export default function ProfilePage() {
               id="name"
               name="name"
               defaultValue={name}
+              required
               className="w-full rounded-xl border bg-white px-3 py-2.5 text-sm outline-none focus:border-green-600"
             />
           </div>
 
+          {message && (
+            <p className="text-sm text-green-700" role="status">
+              {message}
+            </p>
+          )}
+          {errorMessage && (
+            <p className="text-sm text-red-600" role="alert">
+              {errorMessage}
+            </p>
+          )}
+
           <button
             type="submit"
+            disabled={isSaving}
             className="w-full rounded-xl bg-green-700 py-2.5 text-sm font-medium text-white hover:bg-green-800"
           >
-            আপডেট
+            {isSaving ? "আপডেট হচ্ছে..." : "আপডেট"}
           </button>
         </form>
       </section>
