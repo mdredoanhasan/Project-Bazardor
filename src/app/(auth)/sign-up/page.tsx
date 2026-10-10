@@ -8,14 +8,18 @@ import {
   Input,
   Label,
   TextField,
+  Toast,
 } from "@heroui/react";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 const SignUpPage = () => {
+  const router = useRouter();
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,12 +29,55 @@ const SignUpPage = () => {
     formData.forEach((value, key) => {
       data[key] = value.toString();
     });
-    const { data: resData, error } = await signUp.email({
-      name: data.name,
-      email: data.email,
-      password: data.password,
-    });
-    console.log(resData, error);
+    const name = data.name?.trim();
+    const email = data.email?.trim();
+    const confirmPassword = data.confirmPassword;
+
+    if (!name || name.length < 3) {
+      Toast.toast.danger("নাম কমপক্ষে ৩ অক্ষরের হতে হবে।");
+      return;
+    }
+    if (!email || !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+      Toast.toast.danger("সঠিক ইমেইল দিন।");
+      return;
+    }
+    if (data.password.length < 8 || !/[A-Z]/.test(data.password) || !/[0-9]/.test(data.password)) {
+      Toast.toast.danger("পাসওয়ার্ডে কমপক্ষে ৮ অক্ষর, ১টি বড় হাতের অক্ষর ও ১টি সংখ্যা দিন।");
+      return;
+    }
+    if (confirmPassword !== data.password) {
+      Toast.toast.danger("পাসওয়ার্ড মিলছে না।");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await signUp.email({
+        name,
+        email,
+        password: data.password,
+      });
+
+      if (error) {
+        Toast.toast.danger(error.message ?? "অ্যাকাউন্ট তৈরি করা যায়নি।");
+        return;
+      }
+
+      Toast.toast.success("অ্যাকাউন্ট তৈরি হয়েছে।");
+      router.replace("/");
+      router.refresh();
+    } catch (error) {
+      Toast.toast.danger(
+        error instanceof Error ? error.message : "অ্যাকাউন্ট তৈরি করা যায়নি।",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const onInvalid = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    Toast.toast.danger("সব তথ্য সঠিকভাবে পূরণ করুন।");
   };
 
   return (
@@ -41,7 +88,11 @@ const SignUpPage = () => {
       </p>
 
       <div className="rounded-3xl border bg-white p-6 text-left">
-        <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
+        <Form
+          className="flex flex-col gap-4"
+          onSubmit={onSubmit}
+          onInvalid={onInvalid}
+        >
           <TextField
             isRequired
             name="name"
@@ -111,8 +162,12 @@ const SignUpPage = () => {
             <FieldError />
           </TextField>
 
-          <Button type="submit" className="w-full bg-green-700 text-white">
-            অ্যাকাউন্ট তৈরি করুন
+          <Button
+            type="submit"
+            isDisabled={isSubmitting}
+            className="w-full bg-green-700 text-white"
+          >
+            {isSubmitting ? "তৈরি হচ্ছে..." : "অ্যাকাউন্ট তৈরি করুন"}
           </Button>
         </Form>
 

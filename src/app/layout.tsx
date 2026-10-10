@@ -5,6 +5,8 @@ import HeaderPage from "./component/header";
 import Marquee from "./component/marqueeText";
 import Navbar from "./component/navbar";
 import Footer from "./component/footer";
+import { Suspense } from "react";
+import { Toast } from "@heroui/react";
 
 const hindSiliguri = Hind_Siliguri({
   variable: "--font-hind-siliguri",
@@ -22,11 +24,25 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="bn" className={`${hindSiliguri.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
+        <Toast.Provider placement="top end">
         <HeaderPage />
-        <Navbar />
-        <Marquee />
-        {children}
+        <Suspense fallback={<div className="h-12 border-b border-black/10" />}>
+          <Navbar />
+        </Suspense>
+        <Suspense fallback={<div className="h-10 border-b" />}>
+          <Marquee />
+        </Suspense>
+        <Suspense
+          fallback={
+            <main className="container mx-auto flex-1 px-4 py-12">
+              লোড হচ্ছে...
+            </main>
+          }
+        >
+          {children}
+        </Suspense>
         <Footer/>
+        </Toast.Provider>
       </body>
     </html>
   );

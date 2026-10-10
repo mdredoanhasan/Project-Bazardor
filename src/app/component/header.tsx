@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import DateAndTime from "./dateAndTime";
-import { Avatar, Button, Dropdown } from "@heroui/react";
+import { Avatar, Button, Dropdown, Toast } from "@heroui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,28 +21,38 @@ const HeaderPage = () => {
       const { error } = await authClient.signOut();
 
       if (error) {
-        setSignOutError(error.message ?? "সাইন আউট করা যায়নি।");
+        const message = error.message ?? "সাইন আউট করা যায়নি।";
+        setSignOutError(message);
+        Toast.toast.danger(message);
         return;
       }
 
+      Toast.toast.success("সাইন আউট সফল হয়েছে।");
       router.replace("/sign-in");
       router.refresh();
     } catch (error) {
-      setSignOutError(
-        error instanceof Error ? error.message : "সাইন আউট করা যায়নি।",
-      );
+      const message =
+        error instanceof Error ? error.message : "সাইন আউট করা যায়নি।";
+      setSignOutError(message);
+      Toast.toast.danger(message);
     }
   };
 
   return (
     <div className="border border-b-black/10">
-      <div className="container mx-auto mt-3 mb-3 flex justify-between">
-        <Link href={"/"}>
-          <div className="flex">
-            <Image src={"/Stack.png"} alt="logo" height={40} width={54} />
-            <div className="ml-2">
-              <p className="text-2xl font-bold">বাজার দর</p>
-              <span className="text-[14px] opacity-80">
+      <div className="container mx-auto my-3 flex items-center justify-between gap-3 px-4">
+        <Link href="/" className="min-w-0">
+          <div className="flex items-center">
+            <Image
+              src="/Stack.png"
+              alt="logo"
+              height={40}
+              width={54}
+              className="h-9 w-12 shrink-0 sm:h-10 sm:w-13.5"
+            />
+            <div className="ml-2 min-w-0">
+              <p className="truncate text-xl font-bold sm:text-2xl">বাজার দর</p>
+              <span className="hidden text-[14px] opacity-80 sm:block">
                 <DateAndTime />
               </span>
             </div>
@@ -50,11 +60,11 @@ const HeaderPage = () => {
         </Link>
 
         {session?.user ? (
-          <div className="flex flex-col items-end">
+          <div className="flex min-w-0 flex-col items-end">
             <Dropdown>
               <Dropdown.Trigger
                 aria-label="ব্যবহারকারীর মেনু খুলুন"
-                className="flex items-center gap-2 rounded-full px-2 py-1 hover:bg-gray-100"
+                className="flex max-w-[min(50vw,16rem)] items-center gap-2 rounded-full px-2 py-1 hover:bg-gray-100 sm:max-w-64"
               >
                 <Avatar
                   color="accent"
@@ -72,8 +82,10 @@ const HeaderPage = () => {
                       "U"}
                   </Avatar.Fallback>
                 </Avatar>
-                <span>{session.user.name}</span>
-                <span aria-hidden="true" className="text-xs text-gray-500">
+                <span className="max-w-24 truncate text-sm sm:max-w-40 sm:text-base">
+                  {session.user.name}
+                </span>
+                <span aria-hidden="true" className="hidden text-xs text-gray-500 sm:inline">
                   ▼
                 </span>
               </Dropdown.Trigger>
@@ -115,12 +127,16 @@ const HeaderPage = () => {
             )}
           </div>
         ) : (
-          <div>
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <Link href={"/sign-in"}>
-              <Button className="text-black bg-white">সাইন ইন</Button>
+              <Button className="bg-white px-2 text-sm text-black sm:px-4">
+                সাইন ইন
+              </Button>
             </Link>
             <Link href={"/sign-up"}>
-              <Button className="bg-[#05893e]">সাইন আপ</Button>
+              <Button className="bg-[#05893e] px-2 text-sm sm:px-4">
+                সাইন আপ
+              </Button>
             </Link>
           </div>
         )}

@@ -1,12 +1,25 @@
 "use client";
 
 import { signIn } from "@/app/lib/auth-client";
-import { Button, FieldError, Form, Input, Label, TextField } from "@heroui/react";
+import {
+  Button,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  TextField,
+  Toast,
+} from "@heroui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 const SignInPage = () => {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -25,14 +38,39 @@ const SignInPage = () => {
         ? callbackURL
         : "/";
 
-    const { data: resData, error } = await signIn.email({
-      email: data.email,
-      password: data.password,
-      rememberMe: true,
-      callbackURL: safeCallbackURL,
-    });
+    if (!data.email || !data.password) {
+        Toast.toast.danger("ইমেইল ও পাসওয়ার্ড দিন।");
+        return;
+    }
 
-    console.log({ resData, error });
+    setIsSubmitting(true);
+    try {
+        const { error } = await signIn.email({
+          email: data.email,
+          password: data.password,
+          rememberMe: true,
+        });
+
+        if (error) {
+          Toast.toast.danger(error.message ?? "সাইন ইন করা যায়নি।");
+          return;
+        }
+
+        Toast.toast.success("সাইন ইন সফল হয়েছে।");
+        router.replace(safeCallbackURL);
+        router.refresh();
+    } catch (error) {
+        Toast.toast.danger(
+          error instanceof Error ? error.message : "সাইন ইন করা যায়নি।",
+        );
+    } finally {
+        setIsSubmitting(false);
+    }
+  };
+
+  const onInvalid = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    Toast.toast.danger("ইমেইল ও পাসওয়ার্ড সঠিকভাবে পূরণ করুন।");
   };
 
   return (
@@ -43,7 +81,11 @@ const SignInPage = () => {
       </p>
 
       <div className="rounded-3xl border bg-white p-6 text-left">
-        <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
+        <Form
+          className="flex flex-col gap-4"
+          onSubmit={onSubmit}
+          onInvalid={onInvalid}
+        >
           <TextField
             isRequired
             name="email"
@@ -83,8 +125,12 @@ const SignInPage = () => {
             <FieldError />
           </TextField>
 
-          <Button type="submit" className="w-full bg-green-700 text-white">
-            সাইন ইন
+          <Button
+            type="submit"
+            isDisabled={isSubmitting}
+            className="w-full bg-green-700 text-white"
+          >
+            {isSubmitting ? "সাইন ইন হচ্ছে..." : "সাইন ইন"}
           </Button>
         </Form>
 

@@ -53,13 +53,13 @@ export default async function ProductDetailPage({
   return (
     <main className="container mx-auto my-8 max-w-5xl space-y-4 px-4">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-700">
+      <nav className="flex flex-wrap items-center gap-2 text-sm text-gray-700">
         <Link href="/" className="hover:underline">
           হোম
         </Link>
         <span>›</span>
         <Link
-          href={`/catagory/${product.category}`}
+          href={`/category/${product.category}`}
           className="hover:underline"
         >
           {product.categoryNameBn}
@@ -98,10 +98,10 @@ export default async function ProductDetailPage({
       </div>
 
       {/* Summary + table */}
-      <div className="rounded-3xl border bg-white p-6">
+      <div className="rounded-3xl border bg-white p-4 sm:p-6">
         <h2 className="mb-4 font-bold">দামের সারসংক্ষেপ</h2>
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
           <div className="rounded-2xl border p-4">
             <p className="text-xs text-gray-600">সর্বনিম্ন দাম</p>
             <p className="text-2xl font-bold text-green-600">
@@ -133,7 +133,7 @@ export default async function ProductDetailPage({
         <h2 className="mb-3 mt-8 font-bold">বাজারভিত্তিক আজকের দাম</h2>
 
         <div className="overflow-x-auto rounded-2xl border">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[36rem] text-left text-sm">
             <thead>
               <tr className="border-b text-gray-600">
                 <th className="px-4 py-3 font-medium">বাজার</th>

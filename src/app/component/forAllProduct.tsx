@@ -19,13 +19,13 @@ export default async function AllProducts() {
   const res = await fetch('https://openapi.programming-hero.com/api/bazardor/products')
   const data = await res.json()
   return (
-    <div className="container mx-auto mt-14 mb-14">
+    <div id="products" className="container mx-auto mt-10 mb-14 px-4 sm:mt-14">
       <h1 className="text-2xl font-bold">সব পণ্য</h1>
       <p className="mb-4 text-sm text-gray-600">
         মোট {data.length}টি পণ্য দেখানো হচ্ছে
       </p>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
         {data.map((p:CommonType) => {
           const b = badge[p.change.dir];
 

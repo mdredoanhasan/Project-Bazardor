@@ -34,7 +34,7 @@ const CategoryPage = async ({
   }
 
   return (
-    <div className="space-y-4 mt-14 mb-54 container mx-auto">
+    <div className="container mx-auto mt-8 mb-20 space-y-4 px-4 sm:mt-14 sm:mb-32">
       {/* Category header */}
       <div className="flex items-center gap-3 rounded-2xl border bg-white p-4">
         <span className="text-4xl">{data[0].categoryIcon}</span>
@@ -47,7 +47,7 @@ const CategoryPage = async ({
       </div>
 
       {/* Sort bar */}
-      <div className="flex items-center justify-end gap-2 rounded-2xl border bg-white p-4 text-sm">
+      <div className="flex items-center justify-end gap-2 rounded-2xl border bg-white p-3 text-sm sm:p-4">
         <span className="text-gray-600">সাজান</span>
         <select className="rounded-lg border bg-white px-3 py-1.5">
           <option>ডিফল্ট</option>
@@ -59,7 +59,7 @@ const CategoryPage = async ({
       </p>
 
       {/* Product cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
         {data.map((p) => {
           const b = badge[p.change.dir];
 

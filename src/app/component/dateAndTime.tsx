@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+const subscribe = (callback: () => void) => {
+  const intervalId = window.setInterval(callback, 60_000);
+
+  return () => window.clearInterval(intervalId);
+};
+
+const getSnapshot = () =>
+  new Date().toLocaleDateString("bn-BD", { dateStyle: "full" });
+
+const getServerSnapshot = () => "";
 
 const DateAndTime = () => {
-  const [date, setDate] = useState("");
-
-  useEffect(() => {
-    setDate(new Date().toLocaleDateString("bn-BD", { dateStyle: "full" }));
-  }, []);
-
+  const date = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   return <>{date}</>;
 };
 

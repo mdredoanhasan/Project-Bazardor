@@ -8,12 +8,12 @@ export default async function PriceIncrease() {
   const increased = data.filter((p) => p.change.pct > 0).slice(0, 6);
 
   return (
-    <div className="container mx-auto mb-14">
-      <h1 className="mb-4 text-xl font-bold">
+    <div className="container mx-auto mb-10 px-4 sm:mb-14">
+      <h1 className="mb-4 text-xl font-bold sm:text-2xl">
         <span className="text-red-600">▲</span> আজ দাম বেড়েছে
       </h1>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
         {increased.map((p) => (
           <Link
             key={p.id}
