@@ -1,5 +1,5 @@
 import { CommonType } from "./commonType";
-
+import Link from "next/link";
 
 const unitBn: Record<string, string> = {
   kg: "প্রতি কেজি",
@@ -30,7 +30,11 @@ export default async function AllProducts() {
           const b = badge[p.change.dir];
 
           return (
-            <div key={p.id} className="rounded-3xl border bg-white p-4 ">
+            <Link
+              key={p.id}
+              href={`/product/${p.slug}`}
+              className="block rounded-3xl border bg-white p-4"
+            >
               <div className="flex items-center gap-3">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-3xl">
                   {p.image}
@@ -55,7 +59,7 @@ export default async function AllProducts() {
                   %
                 </span>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

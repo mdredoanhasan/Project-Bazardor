@@ -1,62 +1,41 @@
 "use client";
 
-import { signUp } from "@/app/lib/auth-client";
-import {
-  Button,
-  FieldError,
-  Form,
-  Input,
-  Label,
-  TextField,
-} from "@heroui/react";
+import { signIn } from "@/app/lib/auth-client";
+import { Button, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
-const SignUpPage = () => {
-  const [password, setPassword] = useState("");
-
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+const SignInPage = () => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data: Record<string, string> = {};
 
+    // Convert FormData to plain object
     formData.forEach((value, key) => {
       data[key] = value.toString();
     });
-    const { data: resData, error } = await signUp.email({
-      name: data.name,
+
+    const { data: resData, error } = await signIn.email({
       email: data.email,
       password: data.password,
+      rememberMe: true,
+      callbackURL: "/",
     });
-    console.log(resData, error);
+
+    console.log({ resData, error });
   };
 
   return (
     <div className="mx-auto w-full max-w-md py-10 text-center">
-      <h1 className="text-2xl font-bold">অ্যাকাউন্ট তৈরি করুন</h1>
+      <h1 className="text-2xl font-bold">সাইন ইন</h1>
       <p className="mb-6 text-sm text-gray-600">
-        বিনা খরচে সাইন আপ করে সব বিস্তারিত দাম দেখুন।
+        বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে অ্যাকাউন্টে ঢুকুন।
       </p>
 
       <div className="rounded-3xl border bg-white p-6 text-left">
         <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
-          <TextField
-            isRequired
-            name="name"
-            validate={(value) => {
-              if (value.length < 3) {
-                return "নাম কমপক্ষে ৩ অক্ষরের হতে হবে";
-              }
-              return null;
-            }}
-          >
-            <Label>নাম</Label>
-            <Input placeholder="যেমন: রহিম উদ্দিন" />
-            <FieldError />
-          </TextField>
-
           <TextField
             isRequired
             name="email"
@@ -78,8 +57,6 @@ const SignUpPage = () => {
             minLength={8}
             name="password"
             type="password"
-            value={password}
-            onChange={setPassword}
             validate={(value) => {
               if (value.length < 8) {
                 return "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে";
@@ -98,21 +75,8 @@ const SignUpPage = () => {
             <FieldError />
           </TextField>
 
-          <TextField
-            isRequired
-            name="confirmPassword"
-            type="password"
-            validate={(value) =>
-              value !== password ? "পাসওয়ার্ড মিলছে না" : null
-            }
-          >
-            <Label>পাসওয়ার্ড নিশ্চিত করুন</Label>
-            <Input placeholder="আবার লিখুন" />
-            <FieldError />
-          </TextField>
-
           <Button type="submit" className="w-full bg-green-700 text-white">
-            অ্যাকাউন্ট তৈরি করুন
+            সাইন ইন
           </Button>
         </Form>
 
@@ -132,9 +96,9 @@ const SignUpPage = () => {
         </div>
 
         <p className="mt-4 text-center text-sm">
-          অ্যাকাউন্ট আছে?{" "}
-          <Link href="/sign-in" className="text-green-700 hover:underline">
-            সাইন ইন করুন
+          অ্যাকাউন্ট নেই?{" "}
+          <Link href="/sign-up" className="text-green-700 hover:underline">
+            সাইন আপ করুন
           </Link>
         </p>
       </div>
@@ -145,5 +109,4 @@ const SignUpPage = () => {
     </div>
   );
 };
-
-export default SignUpPage;
+export default SignInPage;

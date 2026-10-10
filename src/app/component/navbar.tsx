@@ -18,7 +18,7 @@ const Navbar = async () => {
       <div className="container mx-auto mt-3 mb-3">
 
             {data.map((p: ProductName) => (
-              <Link href={p.slug} className=" mr-8 " key={p.id}>
+              <Link href={`/category/${p.slug}`} className=" mr-8 " key={p.id}>
                 {p.icon} {p.nameBn}
               </Link>
             ))}

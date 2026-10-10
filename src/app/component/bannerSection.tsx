@@ -2,6 +2,7 @@ import React from "react";
 import DateAndTime from "./dateAndTime";
 import { Button} from "@heroui/react";
 import Image from "next/image";
+import Link from "next/link";
 
 const BannerSection = () => {
   return (
@@ -16,7 +17,7 @@ const BannerSection = () => {
             চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম ও মসলার দাম — বাজারভিত্তিক
             বিস্তারিত, গড়, সর্বনিম্ন- <br/>সর্বাধিক এবং দামের পরিবর্তন এক জায়গায়।
           </p>
-          <Button className='bg-[#05893e]'>সব পণ্য দেখুন</Button>
+         <Link href={''}> <Button className='bg-[#05893e]'>সব পণ্য দেখুন</Button></Link>
         </div>
 
         <Image

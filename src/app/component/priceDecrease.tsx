@@ -1,4 +1,5 @@
 import { CommonType } from "./commonType";
+import Link from "next/link";
 
 export default async function PriceDecrease() {
   const res = await fetch(
@@ -16,7 +17,11 @@ export default async function PriceDecrease() {
 
       <div className="grid gap-4 sm:grid-cols-3">
         {decrease.map((p) => (
-          <div key={p.id} className="rounded-3xl border bg-white p-4">
+          <Link
+            key={p.id}
+            href={`/product/${p.slug}`}
+            className="block rounded-3xl border bg-white p-4"
+          >
             <div className="flex items-center gap-3">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-3xl">
                 {p.image}
@@ -34,7 +39,7 @@ export default async function PriceDecrease() {
                 ▼ {Math.abs(p.change.pct)}%
               </span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
