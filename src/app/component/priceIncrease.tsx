@@ -1,10 +1,8 @@
-import { CommonType } from "./commonType";
 import Link from "next/link";
+import { CommonType } from "./commonType";
 
 export default async function PriceIncrease() {
-  const res = await fetch(
-    "https://api.api-store.workers.dev/api/bazardor/products",
-  );
+  const res = await fetch("https://openapi.programming-hero.com/api/bazardor/products");
   const data: CommonType[] = await res.json();
 
   const increased = data.filter((p) => p.change.pct > 0).slice(0, 6);

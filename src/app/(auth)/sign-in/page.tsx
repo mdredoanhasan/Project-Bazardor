@@ -17,11 +17,19 @@ const SignInPage = () => {
       data[key] = value.toString();
     });
 
+    const callbackURL = new URLSearchParams(window.location.search).get(
+      "callbackURL",
+    );
+    const safeCallbackURL =
+      callbackURL?.startsWith("/") && !callbackURL.startsWith("//")
+        ? callbackURL
+        : "/";
+
     const { data: resData, error } = await signIn.email({
       email: data.email,
       password: data.password,
       rememberMe: true,
-      callbackURL: "/",
+      callbackURL: safeCallbackURL,
     });
 
     console.log({ resData, error });

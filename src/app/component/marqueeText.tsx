@@ -1,6 +1,6 @@
 import MarqueeText from "react-marquee-text";
 import "react-marquee-text/dist/styles.css";
-import { CommonType } from "./commonType";
+import type { CommonType } from "./commonType";
 
 const unitBn: Record<string, string> = {
   kg: "কেজি",
@@ -16,8 +16,19 @@ const trend = {
 };
 
 const Marquee = async () => {
-  const res = await fetch("https://api.api-store.workers.dev/api/bazardor/products");
-  const data: CommonType[] = await res.json();
+  const res = await fetch(
+    "https://openapi.programming-hero.com/api/bazardor/products",
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch marquee products: ${res.status}`);
+  }
+
+  const payload: unknown = await res.json();
+  if (!Array.isArray(payload)) {
+    throw new Error("Marquee products API returned an invalid response.");
+  }
+  const data: CommonType[] = payload;
 
   return (
     <div className="border-b">

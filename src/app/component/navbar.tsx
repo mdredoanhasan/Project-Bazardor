@@ -1,6 +1,5 @@
 import Link from "next/link";
-
-interface ProductName {
+interface ProductType {
   id: string;
   slug: string;
   nameBn: string;
@@ -9,19 +8,18 @@ interface ProductName {
 
 const Navbar = async () => {
   const res = await fetch(
-    "https://api.api-store.workers.dev/api/bazardor/categories",
+    "https://openapi.programming-hero.com/api/bazardor/categories",
   );
   const data = await res.json();
 
   return (
     <div className=" border-b border-b-black/10">
       <div className="container mx-auto mt-3 mb-3">
-
-            {data.map((p: ProductName) => (
-              <Link href={`/category/${p.slug}`} className=" mr-8 " key={p.id}>
-                {p.icon} {p.nameBn}
-              </Link>
-            ))}
+        {data.map((p: ProductType) => (
+          <Link href={`/category/${p.slug}`} className="mr-8" key={p.id}>
+            {p.icon} {p.nameBn}
+          </Link>
+        ))}
       </div>
     </div>
   );

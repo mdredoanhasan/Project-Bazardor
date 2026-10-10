@@ -1,5 +1,6 @@
 import { CommonType } from "@/app/component/commonType";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 const toBn = (n: number) => n.toLocaleString("bn-BD");
 
@@ -23,18 +24,22 @@ const CategoryPage = async ({
 }) => {
   const { categoryId } = await params;
 
-  const res = await fetch(
-    `https://api.api-store.workers.dev/api/bazardor/products?category=${categoryId}`,
-  );
-  const data: CommonType[] = await res.json();
+  const res = await fetch("https://api.abcz.workers.dev/api/bazardor/products");
+  const products: CommonType[] = await res.json();
+
+  const data = products.filter((p) => p.category === categoryId);
+
+  if (data.length === 0) {
+    notFound();
+  }
 
   return (
     <div className="space-y-4 mt-14 mb-54 container mx-auto">
       {/* Category header */}
       <div className="flex items-center gap-3 rounded-2xl border bg-white p-4">
-        <span className="text-4xl">{data[0]?.categoryIcon}</span>
+        <span className="text-4xl">{data[0].categoryIcon}</span>
         <div>
-          <h1 className="text-xl font-bold">{data[0]?.categoryNameBn}</h1>
+          <h1 className="text-xl font-bold">{data[0].categoryNameBn}</h1>
           <p className="text-sm text-gray-600">
             {toBn(data.length)}টি পণ্যের আজকের দাম ও পরিবর্তন
           </p>

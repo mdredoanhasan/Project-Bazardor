@@ -1,3 +1,10 @@
+export interface MarketPriceType {
+  market: string;
+  division: string;
+  min: number;
+  max: number;
+}
+
 export interface CommonType {
   id: number;
   slug: string;
@@ -15,4 +22,5 @@ export interface CommonType {
     dir: "up" | "down";
     pct: number;
   };
+  markets: MarketPriceType[];
 }
