@@ -5,8 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { GoSignOut } from "react-icons/go";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const { data: session, isPending } = useSession();
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -34,16 +37,37 @@ export default function ProfilePage() {
 
       if (error) {
         setErrorMessage(error.message ?? "নাম আপডেট করা যায়নি।");
+        toast.error(error.message ?? "নাম আপডেট করা যায়নি।");
         return;
       }
 
       setMessage("নাম আপডেট হয়েছে।");
+      toast.success("নাম আপডেট হয়েছে।");
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "নাম আপডেট করা যায়নি।",
-      );
+      const errorText =
+        error instanceof Error ? error.message : "নাম আপডেট করা যায়নি।";
+      setErrorMessage(errorText);
+      toast.error(errorText);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await authClient.signOut();
+      if (error) {
+        toast.error(error.message ?? "সাইন আউট করা যায়নি।");
+        return;
+      }
+
+      toast.success("সাইন আউট সফল হয়েছে।");
+      router.replace("/sign-in");
+      router.refresh();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "সাইন আউট করা যায়নি।",
+      );
     }
   };
 
@@ -99,6 +123,7 @@ export default function ProfilePage() {
 
         <button
           type="button"
+          onClick={handleSignOut}
           className="rounded-lg border border-red-500 px-4 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
         >
          <span className="flex items-center gap-2 "><GoSignOut /> সাইন আউট</span>

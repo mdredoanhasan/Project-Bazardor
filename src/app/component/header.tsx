@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import DateAndTime from "./dateAndTime";
-import { Avatar, Button, Dropdown, Toast } from "@heroui/react";
+import { Avatar, Button, Dropdown } from "@heroui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient, useSession } from "../lib/auth-client";
 import { GoSignOut } from "react-icons/go";
+import toast from "react-hot-toast";
 
 const HeaderPage = () => {
   const router = useRouter();
@@ -23,18 +24,18 @@ const HeaderPage = () => {
       if (error) {
         const message = error.message ?? "সাইন আউট করা যায়নি।";
         setSignOutError(message);
-        Toast.toast.danger(message);
+        toast.error(message);
         return;
       }
 
-      Toast.toast.success("সাইন আউট সফল হয়েছে।");
+      toast.success("সাইন আউট সফল হয়েছে।");
       router.replace("/sign-in");
       router.refresh();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "সাইন আউট করা যায়নি।";
       setSignOutError(message);
-      Toast.toast.danger(message);
+      toast.error(message);
     }
   };
 

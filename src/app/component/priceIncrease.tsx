@@ -1,11 +1,8 @@
 import Link from "next/link";
-import { CommonType } from "./commonType";
+import { getIncreased } from "@/app/lib/products";
 
 export default async function PriceIncrease() {
-  const res = await fetch("https://openapi.programming-hero.com/api/bazardor/products");
-  const data: CommonType[] = await res.json();
-
-  const increased = data.filter((p) => p.change.pct > 0).slice(0, 6);
+  const increased = await getIncreased();
 
   return (
     <div className="container mx-auto mb-10 px-4 sm:mb-14">

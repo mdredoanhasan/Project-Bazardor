@@ -6,8 +6,7 @@ import { Suspense } from "react";
 
 export default function Home() {
   return (
-    <div className="bg-[#f0f5f0]">
-      
+    <div>
       <BannerSection />
       <Suspense fallback={<SectionLoading />}>
         <PriceIncrease />

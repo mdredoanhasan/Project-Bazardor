@@ -1,4 +1,4 @@
-import { CommonType } from "@/app/component/commonType";
+import { getBySlug } from "@/app/lib/products";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -21,12 +21,7 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const response = await fetch(
-    "https://api.abcz.workers.dev/api/bazardor/products",
-  );
-  const products: CommonType[] = await response.json();
-
-  const product = products.find((item) => item.slug === slug);
+  const product = await getBySlug(slug);
 
   if (!product) {
     notFound();

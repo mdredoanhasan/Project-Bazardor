@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CommonType } from "./commonType";
+import { getProducts } from "@/app/lib/products";
 
 
 const unitBn: Record<string, string> = {
@@ -16,8 +16,7 @@ const badge = {
 };
 
 export default async function AllProducts() {
-  const res = await fetch('https://openapi.programming-hero.com/api/bazardor/products')
-  const data = await res.json()
+  const data = await getProducts();
   return (
     <div id="products" className="container mx-auto mt-10 mb-14 px-4 sm:mt-14">
       <h1 className="text-2xl font-bold">সব পণ্য</h1>
@@ -26,7 +25,7 @@ export default async function AllProducts() {
       </p>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
-        {data.map((p:CommonType) => {
+        {data.map((p) => {
           const b = badge[p.change.dir];
 
           return (

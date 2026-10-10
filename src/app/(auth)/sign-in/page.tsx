@@ -8,17 +8,32 @@ import {
   Input,
   Label,
   TextField,
-  Toast,
 } from "@heroui/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 const SignInPage = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.get("reason") !== "protected-route") {
+      return;
+    }
+
+    toast.error("পণ্যের বিস্তারিত দেখতে সাইন ইন করুন।");
+    currentUrl.searchParams.delete("reason");
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`,
+    );
+  }, []);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,38 +54,38 @@ const SignInPage = () => {
         : "/";
 
     if (!data.email || !data.password) {
-        Toast.toast.danger("ইমেইল ও পাসওয়ার্ড দিন।");
-        return;
+      toast.error("ইমেইল ও পাসওয়ার্ড দিন।");
+      return;
     }
 
     setIsSubmitting(true);
     try {
-        const { error } = await signIn.email({
-          email: data.email,
-          password: data.password,
-          rememberMe: true,
-        });
+      const { error } = await signIn.email({
+        email: data.email,
+        password: data.password,
+        rememberMe: true,
+      });
 
-        if (error) {
-          Toast.toast.danger(error.message ?? "সাইন ইন করা যায়নি।");
-          return;
-        }
+      if (error) {
+        toast.error(error.message ?? "সাইন ইন করা যায়নি।");
+        return;
+      }
 
-        Toast.toast.success("সাইন ইন সফল হয়েছে।");
-        router.replace(safeCallbackURL);
-        router.refresh();
+      toast.success("সাইন ইন সফল হয়েছে।");
+      router.replace(safeCallbackURL);
+      router.refresh();
     } catch (error) {
-        Toast.toast.danger(
-          error instanceof Error ? error.message : "সাইন ইন করা যায়নি।",
-        );
+      toast.error(
+        error instanceof Error ? error.message : "সাইন ইন করা যায়নি।",
+      );
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
   const onInvalid = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    Toast.toast.danger("ইমেইল ও পাসওয়ার্ড সঠিকভাবে পূরণ করুন।");
+    toast.error("ইমেইল ও পাসওয়ার্ড সঠিকভাবে পূরণ করুন।");
   };
 
   return (

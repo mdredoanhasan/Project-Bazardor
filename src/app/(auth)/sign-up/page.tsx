@@ -8,11 +8,11 @@ import {
   Input,
   Label,
   TextField,
-  Toast,
 } from "@heroui/react";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
@@ -34,19 +34,21 @@ const SignUpPage = () => {
     const confirmPassword = data.confirmPassword;
 
     if (!name || name.length < 3) {
-      Toast.toast.danger("নাম কমপক্ষে ৩ অক্ষরের হতে হবে।");
+      toast.error("নাম কমপক্ষে ৩ অক্ষরের হতে হবে।");
       return;
     }
     if (!email || !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
-      Toast.toast.danger("সঠিক ইমেইল দিন।");
+      toast.error("সঠিক ইমেইল দিন।");
       return;
     }
     if (data.password.length < 8 || !/[A-Z]/.test(data.password) || !/[0-9]/.test(data.password)) {
-      Toast.toast.danger("পাসওয়ার্ডে কমপক্ষে ৮ অক্ষর, ১টি বড় হাতের অক্ষর ও ১টি সংখ্যা দিন।");
+      toast.error(
+        "পাসওয়ার্ডে কমপক্ষে ৮ অক্ষর, ১টি বড় হাতের অক্ষর ও ১টি সংখ্যা দিন।",
+      );
       return;
     }
     if (confirmPassword !== data.password) {
-      Toast.toast.danger("পাসওয়ার্ড মিলছে না।");
+      toast.error("পাসওয়ার্ড মিলছে না।");
       return;
     }
 
@@ -59,15 +61,15 @@ const SignUpPage = () => {
       });
 
       if (error) {
-        Toast.toast.danger(error.message ?? "অ্যাকাউন্ট তৈরি করা যায়নি।");
+        toast.error(error.message ?? "অ্যাকাউন্ট তৈরি করা যায়নি।");
         return;
       }
 
-      Toast.toast.success("অ্যাকাউন্ট তৈরি হয়েছে।");
+      toast.success("অ্যাকাউন্ট তৈরি হয়েছে।");
       router.replace("/");
       router.refresh();
     } catch (error) {
-      Toast.toast.danger(
+      toast.error(
         error instanceof Error ? error.message : "অ্যাকাউন্ট তৈরি করা যায়নি।",
       );
     } finally {
@@ -77,7 +79,7 @@ const SignUpPage = () => {
 
   const onInvalid = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    Toast.toast.danger("সব তথ্য সঠিকভাবে পূরণ করুন।");
+    toast.error("সব তথ্য সঠিকভাবে পূরণ করুন।");
   };
 
   return (
