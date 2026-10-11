@@ -13,8 +13,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { FaGithub } from "react-icons/fa";
 import GoogleAuthButton from "@/app/component/googleAuthButton";
+import GithubAuthButton from "@/app/component/githubAuthButton";
 
 function getSafeCallbackURL(): string {
   const callbackURL = new URLSearchParams(window.location.search).get(
@@ -30,15 +30,26 @@ const SignInPage = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const googleAuthErrorRef = useRef<HTMLParagraphElement>(null);
+  const githubAuthErrorRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const currentUrl = new URL(window.location.href);
-    if (currentUrl.searchParams.get("authError") === "google") {
+    const authError = currentUrl.searchParams.get("authError");
+    if (authError === "google") {
       if (googleAuthErrorRef.current) {
         googleAuthErrorRef.current.textContent =
           "Google দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।";
         googleAuthErrorRef.current.hidden = false;
       }
+    } else if (authError === "github") {
+      if (githubAuthErrorRef.current) {
+        githubAuthErrorRef.current.textContent =
+          "GitHub দিয়ে সাইন ইন করা যায়নি। আবার চেষ্টা করুন।";
+        githubAuthErrorRef.current.hidden = false;
+      }
+    }
+
+    if (authError === "google" || authError === "github") {
       currentUrl.searchParams.delete("authError");
       window.history.replaceState(
         window.history.state,
@@ -176,12 +187,16 @@ const SignInPage = () => {
 
         <div className="grid grid-cols-2 gap-3">
           <GoogleAuthButton />
-          <Button variant="secondary">
-            <FaGithub /> GitHub দিয়ে চালিয়ে যান
-          </Button>
+          <GithubAuthButton />
         </div>
         <p
           ref={googleAuthErrorRef}
+          role="alert"
+          hidden
+          className="mt-3 text-sm text-red-600"
+        />
+        <p
+          ref={githubAuthErrorRef}
           role="alert"
           hidden
           className="mt-3 text-sm text-red-600"

@@ -13,8 +13,8 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { FaGithub } from "react-icons/fa";
 import GoogleAuthButton from "@/app/component/googleAuthButton";
+import GithubAuthButton from "@/app/component/githubAuthButton";
 
 const SignUpPage = () => {
   const router = useRouter();
@@ -181,9 +181,7 @@ const SignUpPage = () => {
 
         <div className="grid grid-cols-2 gap-3">
           <GoogleAuthButton />
-          <Button variant="secondary">
-            <FaGithub /> GitHub দিয়ে চালিয়ে যান
-          </Button>
+          <GithubAuthButton />
         </div>
 
         <p className="mt-4 text-center text-sm">
